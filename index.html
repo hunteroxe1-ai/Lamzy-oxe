@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OxeChat — AI by Phillimon</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@500;600;700&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Instrument Sans',sans-serif;background:#060810}
+
+:root{
+  --bg:#060810;
+  --bg2:#0d1117;
+  --bg3:#161b27;
+  --bg4:#1e2535;
+  --border:rgba(120,140,255,0.12);
+  --border2:rgba(120,140,255,0.22);
+  --text1:#e8edf8;
+  --text2:#8892b0;
+  --text3:#4a5568;
+  --accent:#7c8dff;
+  --accent2:#b06aff;
+  --accent3:#ff6ac1;
+  --grad:linear-gradient(135deg,#7c8dff,#b06aff,#ff6ac1);
+  --grad-btn:linear-gradient(135deg,#7c8dff 0%,#b06aff 60%,#ff6ac1 100%);
+  --shadow:0 8px 32px rgba(124,141,255,0.18);
+  --radius:14px;
+}
+
+body.light{
+  --bg:#f0f2ff;
+  --bg2:#e8ebf8;
+  --bg3:#dde1f5;
+  --bg4:#d0d5ee;
+  --border:rgba(80,100,220,0.14);
+  --border2:rgba(80,100,220,0.28);
+  --text1:#0d1030;
+  --text2:#3d4570;
+  --text3:#8892b0;
+  --shadow:0 8px 32px rgba(80,100,220,0.12);
+}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+@keyframes ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.4);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+
+.fade-up{animation:fadeUp .32s cubic-bezier(.22,1,.36,1) both}
+.fade-in{animation:fadeIn .2s ease both}
+.slide-up{animation:slideUp .28s cubic-bezier(.22,1,.36,1) both}
+
+/* ── LAYOUT ── */
+#app{
+  display:flex;flex-direction:column;height:100vh;
+  background:var(--bg);color:var(--text1);
+  transition:background .25s,color .25s;
+  position:relative;overflow:hidden;
+}
+
+/* Mesh background */
+#app::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 8%,rgba(124,141,255,.065) 0%,transparent 55%),
+    radial-gradient(ellipse 45% 40% at 85% 75%,rgba(176,106,255,.05) 0%,transparent 55%),
+    radial-gradient(ellipse 35% 30% at 55% 45%,rgba(255,106,193,.03) 0%,transparent 50%);
+}
+
+/* ── HEADER ── */
+#header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;
+  background:rgba(6,8,16,.88);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;z-index:20;position:relative;
+}
+body.light #header{background:rgba(240,242,255,.9)}
+
+.logo-wrap{display:flex;align-items:center;gap:12px}
+.logo-icon{
+  width:42px;height:42px;border-radius:13px;
+  background:var(--grad-btn);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Clash Display',sans-serif;font-weight:700;font-size:19px;color:#fff;
+  box-shadow:0 4px 18px rgba(124,141,255,.42);
+  position:relative;flex-shrink:0;
+}
+.logo-icon::after{
+  content:'';position:absolute;inset:0;border-radius:13px;
+  background:var(--grad-btn);opacity:.35;
+  animation:ripple 2.4s ease-out infinite;
+}
+.logo-name{
+  font-family:'Clash Display',sans-serif;font-weight:700;font-size:22px;
+  letter-spacing:-.4px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.logo-sub{font-size:11px;color:var(--text3);font-weight:300;margin-top:1px}
+
+.header-btns{display:flex;align-items:center;gap:8px}
+
+.btn-contact{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 15px;border-radius:11px;
+  background:var(--grad-btn);
+  color:#fff;font-family:'Instrument Sans',sans-serif;
+  font-size:13px;font-weight:500;text-decoration:none;
+  box-shadow:0 3px 14px rgba(124,141,255,.38);
+  transition:filter .18s,transform .18s;white-space:nowrap;border:none;cursor:pointer;
+}
+.btn-contact:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn-contact:active{transform:translateY(0)}
+
+.btn-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .18s,border-color .18s;
+}
+.btn-icon:hover{background:var(--bg4);border-color:var(--border2)}
+
+.btn-admin{
+  padding:7px 14px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;font-size:13px;
+  font-family:'Instrument Sans',sans-serif;font-weight:500;
+  transition:background .18s,border-color .18s;white-space:nowrap;
+}
+.btn-admin:hover{background:var(--bg4);border-color:var(--border2)}
+
+/* ── CHAT AREA ── */
+#chat{
+  flex:1;overflow-y:auto;
+  padding:24px 20px 12px;
+  display:flex;flex-direction:column;gap:18px;
+  position:relative;z-index:1;
+}
+
+/* ── EMPTY STATE ── */
+#empty{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 20px;text-align:center;gap:24px;
+}
+.empty-icon{
+  width:72px;height:72px;border-radius:22px;
+  background:var(--grad-btn);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+  box-shadow:0 8px 28px rgba(124,141,255,.38);
+  animation:fadeUp .4s ease both;
+}
+.empty-title{
+  font-family:'Clash Display',sans-serif;font-weight:700;font-size:26px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:fadeUp .4s .07s ease both;
+}
+.empty-sub{
+  font-size:14px;color:var(--text2);max-width:360px;line-height:1.65;
+  animation:fadeUp .4s .12s ease both;
+}
+.suggestions{
+  display:flex;flex-wrap:wrap;gap:9px;justify-content:center;
+  animation:fadeUp .4s .18s ease both;max-width:500px;
+}
+.sug-btn{
+  padding:9px 16px;border-radius:22px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);font-size:13px;cursor:pointer;
+  font-family:'Instrument Sans',sans-serif;
+  transition:background .18s,border-color .18s,color .18s;
+}
+.sug-btn:hover{background:var(--bg4);border-color:var(--border2);color:var(--text1)}
+
+/* ── BUBBLE ── */
+.msg-row{display:flex;gap:10px;align-items:flex-end;max-width:100%}
+.msg-row.user{flex-direction:row-reverse}
+
+.avatar{
+  width:34px;height:34px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;user-select:none;
+  font-family:'Clash Display',sans-serif;
+}
+.avatar.ai{
+  background:var(--grad-btn);color:#fff;
+  box-shadow:0 2px 10px rgba(124,141,255,.3);
+}
+.avatar.user{
+  background:var(--bg3);color:var(--text2);
+  border:1px solid var(--border);
+}
+
+.msg-col{
+  display:flex;flex-direction:column;gap:4px;max-width:76%;
+}
+.msg-row.user .msg-col{align-items:flex-end}
+
+.bubble{
+  padding:11px 15px;border-radius:16px;
+  font-size:14.5px;line-height:1.68;word-break:break-word;
+  position:relative;
+}
+.bubble.ai{
+  background:var(--bg3);color:var(--text1);
+  border:1px solid var(--border);
+  border-bottom-left-radius:4px;
+}
+.bubble.user{
+  background:var(--grad-btn);color:#fff;
+  border-bottom-right-radius:4px;
+  box-shadow:0 4px 16px rgba(124,141,255,.28);
+}
+.bubble-time{font-size:11px;color:var(--text3);padding:0 4px}
+
+.copy-btn{
+  position:absolute;top:7px;right:7px;
+  width:24px;height:24px;border-radius:6px;
+  background:rgba(0,0,0,.3);border:none;
+  color:rgba(255,255,255,.8);cursor:pointer;
+  font-size:11px;display:none;
+  align-items:center;justify-content:center;
+}
+.bubble:hover .copy-btn{display:flex}
+
+/* typing dots */
+.dots{display:flex;gap:5px;padding:3px 0;align-items:center}
+.dot{
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  animation:dotBounce 1.2s infinite ease-in-out;
+}
+
+/* ── INPUT BAR ── */
+#input-bar{
+  padding:12px 20px 16px;
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  position:relative;z-index:10;flex-shrink:0;
+}
+.input-wrap{
+  display:flex;align-items:flex-end;gap:10px;
+  background:var(--bg3);border:1.5px solid var(--border);
+  border-radius:16px;padding:10px 10px 10px 16px;
+  transition:border-color .18s;
+}
+.input-wrap:focus-within{border-color:var(--border2)}
+textarea{
+  flex:1;background:transparent;border:none;outline:none;resize:none;
+  color:var(--text1);font-family:'Instrument Sans',sans-serif;
+  font-size:14.5px;line-height:1.6;min-height:24px;max-height:140px;
+  caret-color:var(--accent);
+}
+textarea::placeholder{color:var(--text3)}
+.send-btn{
+  width:38px;height:38px;border-radius:11px;
+  background:var(--grad-btn);border:none;cursor:pointer;
+  color:#fff;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 3px 12px rgba(124,141,255,.35);
+  transition:filter .18s,transform .18s;
+}
+.send-btn:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}
+.send-btn:active:not(:disabled){transform:translateY(0)}
+.send-btn:disabled{opacity:.45;cursor:not-allowed}
+
+.char-hint{font-size:11.5px;color:var(--text3);text-align:right;padding:5px 4px 0}
+
+/* ── MODAL BACKDROP ── */
+.modal-bg{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.72);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:22px;padding:32px;
+  width:100%;box-shadow:0 24px 80px rgba(0,0,0,.55);
+  position:relative;
+}
+.modal-close{
+  position:absolute;top:14px;right:14px;
+  width:30px;height:30px;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{background:var(--bg4)}
+.modal-title{
+  font-family:'Clash Display',sans-serif;font-weight:700;font-size:20px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:6px;
+}
+.modal-sub{color:var(--text3);font-size:13px;margin-bottom:22px}
+
+.field-label{display:block;font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.field-input{
+  width:100%;padding:10px 14px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:11px;color:var(--text1);
+  font-family:'Instrument Sans',sans-serif;font-size:14px;outline:none;
+  transition:border-color .18s;
+}
+.field-input:focus{border-color:var(--border2)}
+.field-input::placeholder{color:var(--text3)}
+.err-msg{color:#f87171;font-size:13px;text-align:center;margin:8px 0}
+
+.btn-primary{
+  width:100%;padding:12px;background:var(--grad-btn);border:none;
+  border-radius:13px;color:#fff;font-family:'Instrument Sans',sans-serif;
+  font-size:15px;font-weight:500;cursor:pointer;
+  box-shadow:0 4px 18px rgba(124,141,255,.35);
+  transition:filter .18s,transform .18s;
+}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+
+/* ── API KEY BANNER ── */
+#api-banner{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  padding:10px 16px;margin:0 20px 10px;
+  background:rgba(124,141,255,.08);border:1px solid rgba(124,141,255,.2);
+  border-radius:12px;font-size:13px;color:var(--text2);
+}
+.api-badge{
+  display:flex;align-items:center;gap:7px;
+}
+.api-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#4ade80;box-shadow:0 0 8px rgba(74,222,128,.6);
+}
+.api-dot.missing{background:#f87171;box-shadow:0 0 8px rgba(248,113,113,.6)}
+.btn-set-key{
+  padding:5px 12px;border-radius:8px;
+  background:var(--grad-btn);border:none;
+  color:#fff;font-size:12px;font-weight:500;
+  cursor:pointer;font-family:'Instrument Sans',sans-serif;
+}
+
+/* ── DASHBOARD ── */
+.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.stat-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:13px;padding:14px;text-align:center;
+}
+.stat-num{
+  font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+
+.hist-label{
+  font-size:12px;font-weight:600;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;
+}
+.hist-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding-right:4px}
+.hist-item{
+  padding:10px 14px;border-radius:11px;font-size:13px;line-height:1.55;
+}
+.hist-item.user{
+  background:rgba(124,141,255,.07);
+  border:1px solid rgba(124,141,255,.18);
+}
+.hist-item.ai{
+  background:var(--bg3);
+  border:1px solid var(--border);
+}
+.hist-role{
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:4px;
+}
+.hist-role.user{color:#7c8dff}
+.hist-role.ai{color:#4ade80}
+.hist-time{font-size:10.5px;color:var(--text3);margin-top:4px}
+
+.btn-logout{
+  margin-top:14px;padding:9px 18px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;font-size:13px;
+  font-family:'Instrument Sans',sans-serif;
+  transition:background .18s;
+}
+.btn-logout:hover{background:var(--bg4)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="logo-wrap">
+      <div class="logo-icon">O</div>
+      <div>
+        <div class="logo-name">OxeChat</div>
+        <div class="logo-sub">AI by Phillimon</div>
+      </div>
+    </div>
+    <div class="header-btns">
+      <a href="tel:+265986445528" class="btn-contact">📞 Contact Admin</a>
+      <button class="btn-icon" id="themeBtn" title="Toggle theme">🌙</button>
+      <button class="btn-admin" id="adminBtn">⚙ Admin</button>
+    </div>
+  </header>
+
+  <!-- API KEY BANNER -->
+  <div id="api-banner">
+    <div class="api-badge">
+      <div class="api-dot missing" id="apiDot"></div>
+      <span id="apiStatus">No API key set — OxeChat won't work until you add one.</span>
+    </div>
+    <button class="btn-set-key" id="setKeyBtn">🔑 Set API Key</button>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chat">
+    <div id="empty">
+      <div class="empty-icon">💬</div>
+      <div class="empty-title">Start a conversation</div>
+      <div class="empty-sub">Ask me anything — I'm OxeChat, created by Phillimon. I can chat in English or Chichewa.</div>
+      <div class="suggestions">
+        <button class="sug-btn" onclick="suggest(this)">👋 Moni! Uli bwanji?</button>
+        <button class="sug-btn" onclick="suggest(this)">✨ Who created you?</button>
+        <button class="sug-btn" onclick="suggest(this)">🚀 When were you launched?</button>
+        <button class="sug-btn" onclick="suggest(this)">🤔 What can you do?</button>
+        <button class="sug-btn" onclick="suggest(this)">🌍 Lembera Chichewa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <div id="input-bar">
+    <div class="input-wrap">
+      <textarea id="textarea" placeholder="Type a message… (Enter to send, Shift+Enter for new line)" rows="1"></textarea>
+      <button class="send-btn" id="sendBtn" disabled>➤</button>
+    </div>
+    <div class="char-hint" id="charHint">Shift+Enter for new line</div>
+  </div>
+
+</div>
+
+<!-- ═══ API KEY MODAL ═══ -->
+<div id="apiModal" class="modal-bg fade-in" style="display:none">
+  <div class="modal slide-up" style="max-width:440px">
+    <button class="modal-close" onclick="closeModal('apiModal')">✕</button>
+    <div class="modal-title">🔑 Set Your API Key</div>
+    <div class="modal-sub">Enter your Anthropic API key. It stays in your browser only — never sent anywhere else.</div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">Anthropic API Key</label>
+      <input class="field-input" type="password" id="apiKeyInput" placeholder="sk-ant-api03-…" autocomplete="off"/>
+    </div>
+    <div id="apiKeyErr" class="err-msg" style="display:none"></div>
+    <button class="btn-primary" onclick="saveApiKey()" style="margin-top:4px">Save & Activate</button>
+    <div style="margin-top:14px;padding:12px 14px;background:var(--bg3);border-radius:10px;font-size:12.5px;color:var(--text3);line-height:1.6">
+      🔒 <strong style="color:var(--text2)">Your key is private.</strong> It's stored only in your browser's local storage and is used directly to call the Anthropic API. OxeChat never stores or transmits your key to any server.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LOGIN MODAL ═══ -->
+<div id="loginModal" class="modal-bg fade-in" style="display:none">
+  <div class="modal slide-up" style="max-width:420px">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-title">🔐 Admin Login</div>
+    <div class="modal-sub">Enter your credentials to access the admin dashboard.</div>
+    <div style="margin-bottom:14px">
+      <label class="field-label">Username</label>
+      <input class="field-input" type="text" id="loginUser" placeholder="Enter username" autocomplete="off"/>
+    </div>
+    <div style="margin-bottom:6px">
+      <label class="field-label">Password</label>
+      <input class="field-input" type="password" id="loginPass" placeholder="Enter password"
+        onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div id="loginErr" class="err-msg" style="display:none"></div>
+    <button class="btn-primary" onclick="doLogin()" style="margin-top:12px">Login to Dashboard</button>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD MODAL ═══ -->
+<div id="dashModal" class="modal-bg fade-in" style="display:none">
+  <div class="modal slide-up" style="max-width:660px;max-height:84vh;display:flex;flex-direction:column">
+    <button class="modal-close" onclick="closeModal('dashModal')">✕</button>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-shrink:0">
+      <div>
+        <div class="modal-title">📊 Admin Dashboard</div>
+        <div style="font-size:13px;color:var(--text3)">Welcome, Phillimon Isaac</div>
+      </div>
+      <div style="padding:4px 12px;border-radius:20px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:#4ade80;font-size:12px;font-weight:500">🟢 Active</div>
+    </div>
+    <div class="dash-stats" id="dashStats"></div>
+    <div class="hist-label">📋 Chat History</div>
+    <div class="hist-list" id="histList"></div>
+    <button class="btn-logout" onclick="doLogout()">🚪 Logout</button>
+  </div>
+</div>
+
+<script>
+/* ─── CONFIG ─── */
+/* ====================================================
+   🔑 PASTE YOUR API KEY HERE ↓
+   ==================================================== */
+const HARDCODED_API_KEY = "YOUR_API_KEY_HERE";
+/* ==================================================== */
+
+const ADMIN_USER = "Phillimon Isaac";
+const ADMIN_PASS = "Phillimon100++";
+const SYSTEM_PROMPT = `You are OxeChat, a friendly and intelligent AI assistant created by Phillimon.
+
+Your identity:
+- In Chichewa say: "Ine ndine OxeChat, AI yomwe Phillimon anandipanga."
+- You respond naturally in both English and Chichewa, matching the user's language.
+- You are warm, helpful, and professional.
+
+When asked about your origin or the launch, say:
+"OxeChat was launched on 18 March 2026. It was created by Phillimon. Crispin and Lamatic were present during the launch as true associates of Phillimon. Crispin is also called Mambazi or Nzura and is a close companion of Phillimon. Lamatic is also known as Ninja and operates independently."
+
+When asked about Phillimon specifically (who he is, contact, personal details), say:
+"For more information about Phillimon, please press the Contact Admin button."
+
+Always identify yourself as OxeChat created by Phillimon. Be concise and friendly.`;
+
+/* ─── STATE ─── */
+let messages = [];
+let busy = false;
+let loggedIn = false;
+let isDark = true;
+
+/* ─── API KEY ─── */
+function getApiKey(){
+  // Use hardcoded key if set, otherwise fall back to key saved via the UI
+  if(HARDCODED_API_KEY && HARDCODED_API_KEY !== "YOUR_API_KEY_HERE") return HARDCODED_API_KEY;
+  return localStorage.getItem('oxechat_api_key') || '';
+}
+function updateApiBanner(){
+  const key = getApiKey();
+  const dot = document.getElementById('apiDot');
+  const status = document.getElementById('apiStatus');
+  if(key){
+    dot.classList.remove('missing');
+    status.textContent = 'API key set — OxeChat is ready.';
+  } else {
+    dot.classList.add('missing');
+    status.textContent = 'No API key set — OxeChat won\'t work until you add one.';
+  }
+}
+
+function saveApiKey(){
+  const key = document.getElementById('apiKeyInput').value.trim();
+  const err = document.getElementById('apiKeyErr');
+  if(!key){ err.style.display='block'; err.textContent='⚠️ Please enter a valid API key.'; return; }
+  if(!key.startsWith('sk-')){ err.style.display='block'; err.textContent='⚠️ API key should start with sk-'; return; }
+  localStorage.setItem('oxechat_api_key', key);
+  err.style.display='none';
+  closeModal('apiModal');
+  updateApiBanner();
+}
+
+/* ─── THEME ─── */
+function updateTheme(){
+  document.body.className = isDark ? '' : 'light';
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+document.getElementById('themeBtn').onclick = ()=>{ isDark=!isDark; updateTheme(); };
+
+/* ─── MODALS ─── */
+function openModal(id){ document.getElementById(id).style.display='flex'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+document.querySelectorAll('.modal-bg').forEach(el=>{
+  el.addEventListener('click', e=>{ if(e.target===el) el.style.display='none'; });
+});
+
+document.getElementById('setKeyBtn').onclick = ()=>{
+  document.getElementById('apiKeyInput').value = getApiKey();
+  document.getElementById('apiKeyErr').style.display='none';
+  openModal('apiModal');
+};
+
+document.getElementById('adminBtn').onclick = ()=>{
+  if(loggedIn){ openDash(); } else { openModal('loginModal'); }
+};
+
+/* ─── LOGIN ─── */
+function doLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    loggedIn=true; err.style.display='none';
+    closeModal('loginModal'); openDash();
+  } else {
+    err.style.display='block'; err.textContent='❌ Invalid credentials. Access denied.';
+  }
+}
+function doLogout(){ loggedIn=false; closeModal('dashModal'); }
+
+/* ─── DASHBOARD ─── */
+function openDash(){
+  const uC = messages.filter(m=>m.role==='user').length;
+  const aC = messages.filter(m=>m.role==='assistant').length;
+  document.getElementById('dashStats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${messages.length}</div><div class="stat-label">Total Messages</div></div>
+    <div class="stat-card"><div class="stat-num">${uC}</div><div class="stat-label">User Messages</div></div>
+    <div class="stat-card"><div class="stat-num">${aC}</div><div class="stat-label">AI Responses</div></div>
+  `;
+  const list = document.getElementById('histList');
+  if(messages.length===0){
+    list.innerHTML='<div style="text-align:center;color:var(--text3);font-size:14px;padding:32px">No messages yet.</div>';
+  } else {
+    list.innerHTML = messages.map(m=>`
+      <div class="hist-item ${m.role==='user'?'user':'ai'}">
+        <div class="hist-role ${m.role==='user'?'user':'ai'}">${m.role==='user'?'👤 User':'🤖 OxeChat'}</div>
+        <div style="color:var(--text1)">${escHtml(m.content)}</div>
+        <div class="hist-time">🕐 ${m.time}</div>
+      </div>
+    `).join('');
+  }
+  openModal('dashModal');
+}
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ─── CHAT LOGIC ─── */
+function nowTime(){ return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+function suggest(btn){ document.getElementById('textarea').value=btn.textContent.replace(/^[^\w\u0900-\u09FF]+/,''); autoResize(); updateSendBtn(); send(); }
+
+function renderMessages(){
+  const chat = document.getElementById('chat');
+  const empty = messages.length===0;
+  document.getElementById('empty').style.display = empty?'flex':'none';
+
+  // Remove old bubbles
+  chat.querySelectorAll('.msg-row').forEach(el=>el.remove());
+
+  messages.forEach((m,i)=>{
+    const isUser = m.role==='user';
+    const row = document.createElement('div');
+    row.className = 'msg-row fade-up ' + (isUser?'user':'ai');
+    row.innerHTML = `
+      <div class="avatar ${isUser?'user':'ai'}">${isUser?'👤':'O'}</div>
+      <div class="msg-col">
+        <div class="bubble ${isUser?'user':'ai'}">
+          ${m.typing
+            ? '<div class="dots"><div class="dot" style="animation-delay:0s"></div><div class="dot" style="animation-delay:.2s"></div><div class="dot" style="animation-delay:.4s"></div></div>'
+            : escHtml(m.content)
+          }
+          ${!m.typing ? `<button class="copy-btn" title="Copy" onclick="copyMsg(${i})">📋</button>` : ''}
+        </div>
+        <div class="bubble-time">${m.time}</div>
+      </div>
+    `;
+    chat.appendChild(row);
+  });
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function copyMsg(i){
+  navigator.clipboard.writeText(messages[i].content).then(()=>{
+    const btns = document.querySelectorAll('.copy-btn');
+    if(btns[i]){ btns[i].textContent='✅'; setTimeout(()=>{ if(btns[i]) btns[i].textContent='📋'; },1600); }
+  });
+}
+
+async function callAI(history){
+  const key = getApiKey();
+  if(!key) throw new Error('No API key set. Click "Set API Key" to add yours.');
+  const res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true',
+    },
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1024,
+      system:SYSTEM_PROMPT,
+      messages:history,
+    }),
+  });
+  if(!res.ok){
+    const e = await res.json().catch(()=>({}));
+    throw new Error(e?.error?.message||`HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+}
+
+async function send(overrideText){
+  const ta = document.getElementById('textarea');
+  const text = (overrideText ?? ta.value).trim();
+  if(!text || busy) return;
+
+  const userMsg = {role:'user', content:text, time:nowTime()};
+  const prevMsgs = [...messages];
+  messages.push(userMsg);
+  ta.value=''; autoResize(); updateSendBtn();
+  busy=true; document.getElementById('sendBtn').disabled=true;
+
+  messages.push({role:'assistant', content:'', time:'', typing:true});
+  renderMessages();
+
+  try {
+    const apiHistory = [...prevMsgs, userMsg]
+      .filter(m=>!m.typing)
+      .map(m=>({role:m.role==='assistant'?'assistant':'user', content:m.content}));
+    const reply = await callAI(apiHistory);
+    messages = messages.filter(m=>!m.typing);
+    messages.push({role:'assistant', content:reply, time:nowTime()});
+  } catch(err){
+    messages = messages.filter(m=>!m.typing);
+    messages.push({role:'assistant', content:`⚠️ Pepani! Error: ${err.message}`, time:nowTime()});
+  } finally {
+    busy=false; document.getElementById('sendBtn').disabled=false;
+    renderMessages();
+  }
+}
+
+/* ─── TEXTAREA ─── */
+function autoResize(){
+  const ta = document.getElementById('textarea');
+  ta.style.height='auto';
+  ta.style.height=Math.min(ta.scrollHeight,140)+'px';
+}
+function updateSendBtn(){
+  const val = document.getElementById('textarea').value.trim();
+  document.getElementById('sendBtn').disabled = !val || busy;
+}
+
+document.getElementById('textarea').addEventListener('input',()=>{ autoResize(); updateSendBtn(); });
+document.getElementById('textarea').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); }
+});
+document.getElementById('sendBtn').addEventListener('click',()=>send());
+
+/* ─── INIT ─── */
+updateTheme();
+updateApiBanner();
+renderMessages();
+</script>
+</body>
+</html>
