@@ -541,7 +541,7 @@ let isDark = true;
 /* ─── API KEY ─── */
 function getApiKey(){
   // Use hardcoded key if set, otherwise fall back to key saved via the UI
-  if(HARDCODED_API_KEY && HARDCODED_API_KEY !== "YOUR_API_KEY_HERE") return HARDCODED_API_KEY;
+  if(HARDCODED_API_KEY && HARDCODED_API_KEY !== "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") return HARDCODED_API_KEY;
   return localStorage.getItem('oxechat_api_key') || '';
 }
 function updateApiBanner(){
