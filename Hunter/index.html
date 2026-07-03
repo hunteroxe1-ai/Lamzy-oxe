@@ -13,47 +13,26 @@
             overflow: hidden;
             background-color: #000;
         }
-        .ad-container {
+        /* Video idzaze screen yonse pa foni kapena pa kompyuta */
+        video {
             width: 100%;
             height: 100%;
-            position: relative;
-        }
-        /* Kakonzedwe ka Video ndi Website kuti zizidzaza screen yonse */
-        video, iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            object-fit: cover; /* Kuti video isasiye ma space am mbali */
-        }
-        /* Bisani website poyamba */
-        #page-two {
-            display: none;
+            object-fit: cover; 
         }
     </style>
 </head>
 <body>
 
-<div class="ad-container">
-    <video id="page-one" autoplay muted playsinline>
+    <video autoplay muted playsinline>
         <source src="Hunter(0).mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
-    <iframe id="page-two" src="https://sources-cheque-oklahoma-substance.trycloudflare.com"></iframe>
-</div>
-
 <script>
-    // Pakatha masekondi 10 (10000 milliseconds)
+    // Pakatha masekondi 10 (10000ms), tsamba limasinthira munthu kupita ku website ina molunjika
     setTimeout(function() {
-        // Kubisa video
-        document.getElementById('page-one').style.display = 'none';
-        
-        // Kuonetsa website
-        document.getElementById('page-two').style.display = 'block';
-    }, 10000); // 10000ms = 10 Seconds
+        window.location.href = "https://bargains-nova-specialists-mate.trycloudflare.com";
+    }, 10000); 
 </script>
 
 </body>
